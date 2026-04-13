@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}{{ thread.title }}{% endblock %}
+{% block extra_head %}
+{% if thread.custom_html %}
+    {{ thread.custom_html|safe }}
+{% endif %}
+{% if thread.custom_css %}
+    <style>
+        {{ thread.custom_css|safe }}
+    </style>
+{% endif %}
+{% endblock %}
+{% block content %}
+<h2>{{ thread.title }}</h2>
+<p><a href="{{ url_for('board', board_id=board.id) }}">← Назад к доске</a></p>
+{% if thread.age_restriction %}
+    <span class="age-restriction">{{ thread.age_restriction }}+</span>
+{% endif %}
+
+<div id="posts-container">
+    {% for post in posts %}
+        <div class="post" style="display: flex; gap: 15px; border: 1px solid #aaa; margin: 15px 0; padding: 12px;">
+            <div class="post-avatar" style="flex-shrink: 0;">
+                {% if post.user %}
+                    {% if post.user.avatar_filename %}
+                        <img src="{{ url_for('avatar', user_id=post.user.id) }}" style="max-width: 100px;">
+                    {% else %}
+                        {{ post.user.avatar_html|safe }}
+                    {% endif %}
+                    <style>{{ post.user.avatar_css|safe }}</style>
+                {% else %}
+                    <div class="avatar">Аноним</div>
+                {% endif %}
+            </div>
+            <div class="post-info" style="flex-grow: 1; background: #fff; border-left: 1px solid #ccc; padding-left: 10px;">
+                <div class="post-header" style="border-bottom: 1px dashed #ccc; margin-bottom: 8px;">
+                    <strong>
+                        {% if post.user %}
+                            <a href="{{ url_for('profile', user_id=post.user.id) }}">{{ post.user.display_name }}</a>
+                        {% else %}
+                            Аноним
+                        {% endif %}
+                    </strong>
+                    {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    {% if post.edited_at %} (отредактировано {{ post.edited_at.strftime('%Y-%m-%d %H:%M') }}){% endif %}
+                    {% if current_user.is_authenticated and (post.user_id == current_user.id or current_user.can_moderate(board)) %}
+                        <a href="{{ url_for('edit_post', post_id=post.id) }}">[ред.]</a>
+                        <a href="{{ url_for('delete_post', post_id=post.id) }}">[удалить]</a>
+                    {% endif %}
+                </div>
+                <div class="post-content">
+                    {{ post.content|safe }}
+                    {% if post.media %}
+                        <div class="media">
+                            <a href="{{ url_for('media', media_id=post.media.id) }}" target="_blank">
+                                <img src="{{ url_for('media', media_id=post.media.id) }}" style="max-width: 300px;">
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% if not thread.is_locked and current_user.is_authenticated and not current_user.is_banned %}
+    <h3>Ответить</h3>
+    <form method="post" action="{{ url_for('reply', thread_id=thread.id) }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <p>{{ form.content.label }}<br>{{ form.content(cols=80, rows=10) }}</p>
+        <p>{{ form.media.label }} {{ form.media() }}</p>
+        <p><input type="submit" value="Отправить"></p>
+    </form>
+{% elif thread.is_locked %}
+    <p>Тред закрыт для ответов.</p>
+{% elif current_user.is_banned %}
+    <p>Вы забанены и не можете отвечать.</p>
+{% else %}
+    <p><a href="{{ url_for('login') }}">Войдите</a> чтобы ответить.</p>
+{% endif %}
+
+<script>
+    var threadId = {{ thread.id }};
+    var lastPostId = {{ posts[-1].id if posts else 0 }};
+    var eventSource = new EventSource("/stream/" + threadId + "?last_id=" + lastPostId);
+
+    eventSource.onmessage = function(event) {
+        var post = JSON.parse(event.data);
+        var newPostDiv = document.createElement('div');
+        newPostDiv.className = 'post';
+        newPostDiv.style.display = 'flex';
+        newPostDiv.style.gap = '15px';
+        newPostDiv.style.border = '1px solid #aaa';
+        newPostDiv.style.margin = '15px 0';
+        newPostDiv.style.padding = '12px';
+        newPostDiv.innerHTML = `
+            <div class="post-avatar" style="flex-shrink: 0;">
+                ${post.user.avatar ? post.user.avatar : '<div class="avatar">Аноним</div>'}
+            </div>
+            <div class="post-info" style="flex-grow: 1; background: #fff; border-left: 1px solid #ccc; padding-left: 10px;">
+                <div class="post-header" style="border-bottom: 1px dashed #ccc; margin-bottom: 8px;">
+                    <strong>${escapeHtml(post.user.display_name)}</strong>
+                    ${post.created_at}
+                    ${post.user_id === {{ current_user.id if current_user.is_authenticated else 'null' }} ? '<a href="#">[ред.]</a> <a href="#">[удалить]</a>' : ''}
+                </div>
+                <div class="post-content">${escapeHtml(post.content)}</div>
+            </div>
+        `;
+        document.getElementById('posts-container').appendChild(newPostDiv);
+        lastPostId = post.id;
+    };
+
+    eventSource.onerror = function() {
+        eventSource.close();
+        setTimeout(function() {
+            eventSource = new EventSource("/stream/" + threadId + "?last_id=" + lastPostId);
+        }, 3000);
+    };
+
+    function escapeHtml(text) {
+        return text.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+</script>
+{% endblock %}

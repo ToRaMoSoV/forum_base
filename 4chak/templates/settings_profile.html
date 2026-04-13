@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Настройки профиля{% endblock %}
+{% block content %}
+<h1>Настройки профиля</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <p>{{ form.display_name.label }}<br>{{ form.display_name(size=40) }}</p>
+    <p>{{ form.bio.label }}<br>{{ form.bio(cols=60, rows=5) }}</p>
+    <p>{{ form.language.label }} {{ form.language() }}</p>
+    <p>{{ form.timezone.label }} {{ form.timezone() }}</p>
+    <p>{{ form.profile_html.label }}<br>{{ form.profile_html(cols=80, rows=5) }}</p>
+    <p>{{ form.profile_css.label }}<br>{{ form.profile_css(cols=80, rows=5) }}</p>
+    <p><input type="submit" value="Сохранить"></p>
+</form>
+{% endblock %}

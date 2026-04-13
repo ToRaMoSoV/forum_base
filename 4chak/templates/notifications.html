@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Уведомления{% endblock %}
+{% block content %}
+<h1>Уведомления</h1>
+{% for notif in notifications %}
+<div class="notification">
+    <p><a href="{{ notif.link }}">{{ notif.content }}</a></p>
+    <small>{{ notif.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+</div>
+{% else %}
+<p>Нет уведомлений</p>
+{% endfor %}
+{% endblock %}

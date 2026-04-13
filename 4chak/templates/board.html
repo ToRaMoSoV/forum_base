@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ board.name }}{% endblock %}
+{% block content %}
+<h1>{{ board.name }}</h1>
+<p>{{ board.description }}</p>
+{% if board.age_restriction %}
+    <span class="age-restriction">{{ board.age_restriction }}+</span>
+{% endif %}
+{% if current_user.is_authenticated and not current_user.is_banned %}
+    <a href="{{ url_for('new_thread', board_id=board.id) }}">Создать тред</a>
+{% endif %}
+<hr>
+{% for thread in threads %}
+    <div class="thread">
+        <h3><a href="{{ url_for('thread', thread_id=thread.id) }}">{{ thread.title }}</a>
+        {% if thread.age_restriction %}
+            <span class="age-restriction">{{ thread.age_restriction }}+</span>
+        {% endif %}
+        {% if thread.is_pinned %} [Закреплён] {% endif %}
+        {% if thread.is_locked %} [Закрыт] {% endif %}
+        </h3>
+        <p>Автор: {{ thread.user.display_name if thread.user else 'Аноним' }}, создан: {{ thread.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        {% if current_user.can_moderate(board) %}
+            <a href="{{ url_for('delete_thread', thread_id=thread.id) }}">Удалить</a>
+            <a href="{{ url_for('pin_thread', thread_id=thread.id) }}">{% if thread.is_pinned %}Открепить{% else %}Закрепить{% endif %}</a>
+            <a href="{{ url_for('lock_thread', thread_id=thread.id) }}">{% if thread.is_locked %}Открыть{% else %}Закрыть{% endif %}</a>
+        {% endif %}
+    </div>
+{% else %}
+    <p>Нет тредов</p>
+{% endfor %}
+{% endblock %}

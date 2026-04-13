@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Приватные треды{% endblock %}
+{% block content %}
+<h1>Приватные треды</h1>
+<a href="{{ url_for('new_private_thread') }}">Создать новый</a>
+<ul>
+{% for thread in threads %}
+    <li><a href="{{ url_for('view_private_thread', thread_id=thread.id) }}">{{ thread.title }}</a> (создан {{ thread.created_at.strftime('%Y-%m-%d') }})</li>
+{% else %}
+    <li>Нет приватных тредов</li>
+{% endfor %}
+</ul>
+{% endblock %}

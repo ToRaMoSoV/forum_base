@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Форум{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% if current_user.is_authenticated and current_user.theme_html %}
+        {{ current_user.theme_html|safe }}
+    {% endif %}
+    {% if current_user.is_authenticated and current_user.theme_css %}
+        <style>
+            {{ current_user.theme_css|safe }}
+        </style>
+    {% endif %}
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div id="forum-header" class="header">
+        <a href="{{ url_for('index') }}">{{ get_menu_text('index', 'Главная') }}</a> |
+        <a href="{{ url_for('boards') }}">{{ get_menu_text('boards', 'Доски') }}</a> |
+        <a href="{{ url_for('anon_board') }}">{{ get_menu_text('anon_board', 'Анонимный раздел') }}</a> |
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('profile', user_id=current_user.id) }}">
+                {{ get_menu_text('profile', current_user.display_name) }}
+            </a> |
+            <a href="{{ url_for('settings_profile') }}">{{ get_menu_text('settings_profile', 'Профиль') }}</a> |
+            <a href="{{ url_for('settings_avatar') }}">{{ get_menu_text('settings_avatar', 'Аватар') }}</a> |
+            <a href="{{ url_for('settings_theme') }}">{{ get_menu_text('settings_theme', 'Тема') }}</a> |
+            <a href="{{ url_for('private_threads') }}">{{ get_menu_text('private_threads', 'Приватные') }}</a> |
+            <a href="{{ url_for('notifications') }}">{{ get_menu_text('notifications', 'Уведомления') }}</a> |
+            {% if current_user.is_admin %}
+                <a href="{{ url_for('admin.dashboard') }}">{{ get_menu_text('admin', 'Админка') }}</a> |
+            {% endif %}
+            <a href="{{ url_for('logout') }}">{{ get_menu_text('logout', 'Выйти') }}</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">{{ get_menu_text('login', 'Вход') }}</a> |
+            <a href="{{ url_for('register') }}">{{ get_menu_text('register', 'Регистрация') }}</a>
+        {% endif %}
+    </div>
+
+    <div class="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <style>
+        body #forum-header.header {
+            display: block !important;
+            background: #fff !important;
+            border-bottom: 1px solid #ccc !important;
+            padding: 10px 20px !important;
+            margin-bottom: 20px !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        body #forum-header.header a {
+            color: #00f !important;
+            font-weight: normal !important;
+            margin-right: 10px !important;
+            text-decoration: none !important;
+        }
+        body #forum-header.header a:hover {
+            text-decoration: underline !important;
+        }
+    </style>
+</body>
+</html>

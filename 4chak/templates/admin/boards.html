@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Доски{% endblock %}
+{% block content %}
+<h1>Управление досками</h1>
+<a href="{{ url_for('admin.add_board') }}">Добавить доску</a>
+<table border="1">
+     <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Описание</th>
+        <th>Анонимная</th>
+        <th>Модератор</th>
+        <th>Действия</th>
+     </tr>
+    {% for board in boards %}
+     <tr>
+        <td>{{ board.id }}</td>
+        <td>{{ board.name }}</td>
+        <td>{{ board.description }}</td>
+        <td>{{ board.is_anonymous }}</td>
+        <td>{{ board.moderator.nickname if board.moderator else '-' }}</td>
+        <td>
+            <a href="{{ url_for('admin.edit_board', board_id=board.id) }}">Редактировать</a>
+            <a href="{{ url_for('admin.delete_board', board_id=board.id) }}" onclick="return confirm('Удалить?')">Удалить</a>
+        </td>
+     </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ thread.title }}{% endblock %}
+{% block content %}
+<h1>{{ thread.title }}</h1>
+<p><a href="{{ url_for('private_threads') }}">← Назад к списку</a></p>
+
+{% for msg in messages %}
+<div class="post">
+    <div class="post-header">
+        <strong>{{ msg.user.display_name }} ({{ msg.user.unique_username }})</strong>
+        {{ msg.created_at.strftime('%Y-%m-%d %H:%M') }}
+    </div>
+    <div class="post-content">
+        {{ msg.content|safe }}
+        {% if msg.media %}
+            <div class="media">
+                <a href="{{ url_for('media', media_id=msg.media.id) }}" target="_blank">
+                    <img src="{{ url_for('media', media_id=msg.media.id) }}" style="max-width: 300px; max-height: 300px;">
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+<h3>Ответить</h3>
+<form method="post" action="{{ url_for('private_reply', thread_id=thread.id) }}" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <p>{{ form.content.label }}<br>{{ form.content(cols=80, rows=10) }}</p>
+    <p>{{ form.media.label }} {{ form.media() }}</p>
+    <p><input type="submit" value="Отправить"></p>
+</form>
+{% endblock %}

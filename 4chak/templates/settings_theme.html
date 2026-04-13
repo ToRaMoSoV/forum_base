@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Личная тема{% endblock %}
+{% block content %}
+<h1>Личная тема оформления</h1>
+<p>Здесь вы можете задать HTML/CSS, которые будут влиять на то, как вы видите форум.</p>
+
+<form id="theme-form" method="post">
+    {{ form.hidden_tag() }}
+    <p>{{ form.theme_html.label }}<br>{{ form.theme_html(cols=80, rows=10) }}</p>
+    <p>{{ form.theme_css.label }}<br>{{ form.theme_css(cols=80, rows=10) }}</p>
+
+    <details>
+        <summary>Настройка текста меню</summary>
+        <table style="margin-top: 10px;">
+            <tr><th>Пункт меню</th><th>Ваш текст</th></tr>
+            <tr><td>Главная</td><td>{{ form.menu_index(size=30) }}</td></tr>
+            <tr><td>Доски</td><td>{{ form.menu_boards(size=30) }}</td></tr>
+            <tr><td>Анонимный раздел</td><td>{{ form.menu_anon_board(size=30) }}</td></tr>
+            <tr><td>Профиль (имя пользователя)</td><td>{{ form.menu_profile(size=30) }} (оставьте пустым для отображения имени)</td></tr>
+            <tr><td>Настройки профиля</td><td>{{ form.menu_settings_profile(size=30) }}</td></tr>
+            <tr><td>Аватар</td><td>{{ form.menu_settings_avatar(size=30) }}</td></tr>
+            <tr><td>Тема</td><td>{{ form.menu_settings_theme(size=30) }}</td></tr>
+            <tr><td>Приватные</td><td>{{ form.menu_private_threads(size=30) }}</td></tr>
+            <tr><td>Уведомления</td><td>{{ form.menu_notifications(size=30) }}</td></tr>
+            <tr><td>Выйти</td><td>{{ form.menu_logout(size=30) }}</td></tr>
+            <tr><td>Вход</td><td>{{ form.menu_login(size=30) }}</td></tr>
+            <tr><td>Регистрация</td><td>{{ form.menu_register(size=30) }}</td></tr>
+            <tr><td>Админка</td><td>{{ form.menu_admin(size=30) }}</td></tr>
+        </table>
+    </details>
+
+    <p><input type="submit" value="Сохранить"></p>
+</form>
+
+<!-- То же самое всплывающее окно, как раньше -->
+<div id="toast" style="display: none; position: fixed; top: 20px; right: 20px; background: white; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); padding: 15px; z-index: 10000; flex-direction: column; gap: 10px; min-width: 200px;">
+    <div style="font-weight: bold;">Тема изменена</div>
+    <div style="display: flex; gap: 10px;">
+        <button id="toast-permanent" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 3px;">Оставить навсегда</button>
+        <button id="toast-rollback" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 3px;">Откатить</button>
+        <button id="toast-temp" style="background: #ff9800; color: white; border: none; padding: 5px 10px; border-radius: 3px;">На 2 минуты</button>
+    </div>
+    <div id="toast-timer" style="font-size: 0.8em; color: #666;"></div>
+</div>
+<script src="{{ url_for('static', filename='theme.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Редактировать доску{% endblock %}
+{% block content %}
+<h1>Редактировать {{ board.name }}</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <p>{{ form.name.label }} {{ form.name(size=40) }}</p>
+    <p>{{ form.description.label }} {{ form.description(size=80) }}</p>
+    <p>{{ form.is_anonymous() }} {{ form.is_anonymous.label }}</p>
+    <p>{{ form.moderator_id.label }} {{ form.moderator_id() }}</p>
+    <p><input type="submit" value="Сохранить"></p>
+</form>
+{% endblock %}

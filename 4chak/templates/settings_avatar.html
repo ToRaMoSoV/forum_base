@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Настройки аватарки и плашки сообщения{% endblock %}
+{% block content %}
+<h1>Настройки аватарки и плашки сообщения</h1>
+<p>Этот блок отображается слева от сообщения. Вы можете загрузить аватарку файлом или задать любой HTML/CSS.</p>
+<p>Справа от него всегда будет стандартный блок с именем, датой и кнопками.</p>
+<form method="post" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <p>{{ form.avatar_file.label }} {{ form.avatar_file() }}</p>
+    <p>{{ form.avatar_html.label }}<br>{{ form.avatar_html(cols=80, rows=5) }}</p>
+    <p>{{ form.avatar_css.label }}<br>{{ form.avatar_css(cols=80, rows=5) }}</p>
+    <p><input type="submit" value="Сохранить"></p>
+</form>
+<hr>
+<h3>Предпросмотр</h3>
+<div style="display: flex; gap: 15px; border:1px solid #ccc; padding:10px;">
+    <div class="preview-avatar">
+        {% if current_user.avatar_filename %}
+            <img src="{{ url_for('avatar', user_id=current_user.id) }}" style="max-width: 100px;">
+        {% else %}
+            {{ current_user.avatar_html|safe }}
+        {% endif %}
+        <style>{{ current_user.avatar_css|safe }}</style>
+    </div>
+    <div style="background:#f9f9f9; padding:5px;">
+        <strong>Имя пользователя</strong><br>
+        <small>Дата сообщения</small><br>
+        <a href="#">[ред.]</a> <a href="#">[удалить]</a>
+    </div>
+</div>
+{% endblock %}

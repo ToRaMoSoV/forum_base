@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Новый тред в анонимном разделе{% endblock %}
+{% block content %}
+<h1>Создать тред в анонимном разделе</h1>
+<form method="post" enctype="multipart/form-data">
+    <p>Заголовок:<br><input type="text" name="title" size="80" required></p>
+    <p>Сообщение:<br><textarea name="content" cols="80" rows="10" required></textarea></p>
+    <p>Медиа: <input type="file" name="media"></p>
+    <p><input type="submit" value="Создать"></p>
+</form>
+{% endblock %}

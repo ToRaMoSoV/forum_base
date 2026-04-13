@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Админка{% endblock %}
+{% block content %}
+<h1>Панель администратора</h1>
+<ul>
+    <li><a href="{{ url_for('admin.users') }}">Пользователи ({{ users_count }})</a></li>
+    <li><a href="{{ url_for('admin.boards') }}">Доски ({{ boards_count }})</a></li>
+    <li><a href="{{ url_for('admin.threads') }}">Треды ({{ threads_count }})</a></li>
+    <li><a href="{{ url_for('admin.posts') }}">Посты ({{ posts_count }})</a></li>
+    <li><a href="{{ url_for('admin.media') }}">Медиа ({{ media_count }})</a></li>
+    <li><a href="{{ url_for('bootstrap_demo') }}">Bootstrap</a></li>    
+</ul>
+{% endblock %}
+

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Редактирование профиля{% endblock %}
+{% block content %}
+<h2>Редактирование профиля</h2>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <p>{{ form.profile_html.label }}<br>{{ form.profile_html(cols=80, rows=10) }}</p>
+    <p>{{ form.profile_css.label }}<br>{{ form.profile_css(cols=80, rows=5) }}</p>
+    <p><input type="submit" value="Сохранить"></p>
+</form>
+
+<hr>
+<h3>Разрешённые HTML-теги и атрибуты</h3>
+<p>Вы можете использовать следующие теги для оформления профиля:</p>
+<div style="background: #eee; padding: 10px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;">
+    <strong>Блочные:</strong> p, div, h1, h2, h3, h4, h5, h6, blockquote, pre, hr, center<br>
+    <strong>Строчные:</strong> span, a, strong, em, u, b, i, big, small, sub, sup, strike, s, del, ins<br>
+    <strong>Списки:</strong> ul, ol, li<br>
+    <strong>Таблицы:</strong> table, tr, td, th, thead, tbody<br>
+    <strong>Медиа:</strong> img, figure, figcaption<br>
+    <strong>Прочее:</strong> br, code, details, summary, font<br>
+    <strong>Атрибуты:</strong> class, style, id, title, align, valign, colspan, rowspan, href, target, src, alt, width, height, color, size, face, border, cellpadding, cellspacing<br>
+    <strong>Важно:</strong> JavaScript, iframe, embed, object, script, form, input не разрешены и будут удалены.
+</div>
+<p><em>CSS можно использовать любой, но помните, что он будет применён только к вашему профилю. Не добавляйте скрипты — они будут вырезаны.</em></p>
+{% endblock %}

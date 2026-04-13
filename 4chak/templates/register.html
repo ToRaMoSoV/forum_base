@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+<h1>Регистрация</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <p>{{ form.email.label }}<br>{{ form.email(size=40) }}</p>
+    <p>{{ form.display_name.label }}<br>{{ form.display_name(size=40) }}</p>
+    <p>{{ form.unique_username.label }}<br>{{ form.unique_username(size=40) }}</p>
+    <p>
+        {{ form.password.label }}<br>
+        <input type="password" name="password" id="password" size="40">
+        <input type="checkbox" onclick="togglePassword()"> Показать пароль
+    </p>
+    <p>{{ form.date_of_birth.label }}<br>{{ form.date_of_birth() }}</p>
+    <p><input type="submit" value="Зарегистрироваться"></p>
+</form>
+<script>
+    function togglePassword() {
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+</script>
+{% endblock %}

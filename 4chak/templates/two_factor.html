@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Двухфакторная аутентификация{% endblock %}
+{% block content %}
+<h1>Двухфакторная аутентификация</h1>
+<p>Код отправлен на адрес: <strong>{{ email }}</strong></p>
+<p>Введите 6-значный код из письма ниже. Код действителен 15 минут.</p>
+
+<div id="message-area"></div>
+
+<form method="post" id="two-factor-form">
+    {{ form.hidden_tag() }}
+    <p>{{ form.code.label }}<br>{{ form.code(size=6, autocomplete="off") }}</p>
+    <p><input type="submit" value="Подтвердить"></p>
+</form>
+
+<div>
+    <button id="resend-btn" onclick="resendCode()">Отправить код повторно</button>
+    <span id="timer"></span>
+</div>
+
+<script>
+    let countdown = 60;
+    let canResend = false;
+    const timerElement = document.getElementById('timer');
+    const resendBtn = document.getElementById('resend-btn');
+
+    function updateTimer() {
+        if (countdown <= 0) {
+            timerElement.textContent = '';
+            resendBtn.disabled = false;
+            canResend = true;
+        } else {
+            timerElement.textContent = ` (повторно через ${countdown} сек)`;
+            resendBtn.disabled = true;
+            countdown--;
+            setTimeout(updateTimer, 1000);
+        }
+    }
+
+    function resendCode() {
+        if (!canResend) return;
+        fetch("{{ url_for('resend_code') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('message-area').innerHTML = '<div class="flash success">' + data.message + '</div>';
+                countdown = 60;
+                canResend = false;
+                updateTimer();
+            } else {
+                document.getElementById('message-area').innerHTML = '<div class="flash danger">' + (data.error || 'Ошибка') + '</div>';
+            }
+        })
+        .catch(error => {
+            document.getElementById('message-area').innerHTML = '<div class="flash danger">Ошибка соединения</div>';
+        });
+    }
+
+    // Запускаем таймер при загрузке страницы
+    updateTimer();
+</script>
+
+<style>
+    .flash { padding: 10px; margin: 10px 0; border-radius: 3px; }
+    .success { background: #dfd; border: 1px solid #0a0; }
+    .danger { background: #fdd; border: 1px solid #f00; }
+    #resend-btn { padding: 5px 10px; margin-top: 10px; }
+</style>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Профиль {{ user.display_name }}{% endblock %}
+{% block extra_head %}
+<style>
+    /* Переопределяем стили для страницы профиля */
+    .profile-full-page {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .profile-full-page .content {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+</style>
+{% if user.profile_css %}
+<style>
+    {{ user.profile_css|safe }}
+</style>
+{% endif %}
+{% endblock %}
+{% block content %}
+<div class="profile-full-page">
+    {{ user.profile_html|safe }}
+</div>
+{% endblock %}

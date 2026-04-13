@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Посты{% endblock %}
+{% block content %}
+<h1>Все посты</h1>
+<table border="1">
+     <tr>
+        <th>ID</th>
+        <th>Содержание</th>
+        <th>Тред</th>
+        <th>Автор</th>
+        <th>Создан</th>
+        <th>Действия</th>
+     </tr>
+    {% for post in posts %}
+     <tr>
+        <td>{{ post.id }}</td>
+        <td>{{ post.content[:100] }}...</td>
+        <td>{{ post.thread.title }}</td>
+        <td>{{ post.user.nickname if post.user else 'Аноним' }}</td>
+        <td>{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>
+            <a href="{{ url_for('admin.delete_post', post_id=post.id) }}" onclick="return confirm('Удалить?')">Удалить</a>
+        </td>
+     </tr>
+    {% endfor %}
+</table>
+{% endblock %}

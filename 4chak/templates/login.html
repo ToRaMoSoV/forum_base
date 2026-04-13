@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+<h1>Вход</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <p>{{ form.login.label }}<br>{{ form.login(size=40) }}</p>
+    <p>
+        {{ form.password.label }}<br>
+        <input type="password" name="password" id="password" size="40">
+        <input type="checkbox" onclick="togglePassword()"> Показать пароль
+    </p>
+    <p><input type="submit" value="Войти"></p>
+</form>
+<script>
+    function togglePassword() {
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+</script>
+{% endblock %}

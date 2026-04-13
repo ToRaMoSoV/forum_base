@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Анонимный раздел{% endblock %}
+{% block content %}
+<h1>Анонимный раздел</h1>
+<p>Очищается каждые 24 часа. Анонимность полная.</p>
+<a href="{{ url_for('anon_new_thread') }}">Создать тред</a>
+<hr>
+{% for thread in threads %}
+    <div class="thread">
+        <h3><a href="{{ url_for('anon_thread', thread_id=thread.id) }}">{{ thread.title }}</a></h3>
+        <p>Создан: {{ thread.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+    </div>
+{% else %}
+    <p>Нет тредов</p>
+{% endfor %}
+{% endblock %}

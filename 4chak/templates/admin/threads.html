@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Треды{% endblock %}
+{% block content %}
+<h1>Все треды</h1>
+<table border="1">
+     <tr>
+        <th>ID</th>
+        <th>Заголовок</th>
+        <th>Доска</th>
+        <th>Автор</th>
+        <th>Создан</th>
+        <th>Действия</th>
+     </tr>
+    {% for thread in threads %}
+     <tr>
+        <td>{{ thread.id }}</td>
+        <td>{{ thread.title }}</td>
+        <td>{{ thread.board.name }}</td>
+        <td>{{ thread.user.nickname if thread.user else 'Аноним' }}</td>
+        <td>{{ thread.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>
+            <a href="{{ url_for('admin.delete_thread', thread_id=thread.id) }}" onclick="return confirm('Удалить?')">Удалить</a>
+        </td>
+     </tr>
+    {% endfor %}
+</table>
+{% endblock %}

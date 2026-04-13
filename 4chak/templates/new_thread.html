@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Новый тред в {{ board.name }}{% endblock %}
+{% block content %}
+<h1>Создать тред в {{ board.name }}</h1>
+<form method="post" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <p>{{ form.title.label }}<br>{{ form.title(size=80) }}</p>
+    <p>{{ form.content.label }}<br>{{ form.content(cols=80, rows=10) }}</p>
+    <p>{{ form.media.label }} {{ form.media() }}</p>
+    <p>{{ form.age_restriction.label }} {{ form.age_restriction() }}</p>
+    <p>{{ form.custom_html.label }}<br>{{ form.custom_html(cols=80, rows=5) }}</p>
+    <p>{{ form.custom_css.label }}<br>{{ form.custom_css(cols=80, rows=5) }}</p>
+    <p><input type="submit" value="Создать"></p>
+</form>
+{% endblock %}

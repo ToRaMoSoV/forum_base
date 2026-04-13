@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Редактировать пользователя{% endblock %}
+{% block content %}
+<h1>Редактировать {{ user.display_name }}</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <p>{{ form.email.label }} {{ form.email(size=40) }}</p>
+    <p>{{ form.display_name.label }} {{ form.display_name(size=40) }}</p>
+    <p>{{ form.unique_username.label }} {{ form.unique_username(size=40) }}</p>
+    <p>{{ form.date_of_birth.label }} {{ form.date_of_birth() }}</p>
+    <p>{{ form.is_admin() }} {{ form.is_admin.label }}</p>
+    <p>{{ form.is_moderator() }} {{ form.is_moderator.label }}</p>
+    <p>{{ form.is_banned() }} {{ form.is_banned.label }}</p>
+    <p>{{ form.ban_reason.label }} {{ form.ban_reason(size=40) }}</p>
+    <p>{{ form.banned_until.label }} {{ form.banned_until(size=40) }}</p>
+    <p><input type="submit" value="Сохранить"></p>
+</form>
+{% endblock %}

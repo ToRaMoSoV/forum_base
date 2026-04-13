@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ thread.title }}{% endblock %}
+{% block content %}
+<h2>{{ thread.title }}</h2>
+<p><a href="{{ url_for('anon_board') }}">← Назад к анонимному разделу</a></p>
+{% for post in posts %}
+    <div class="post">
+        <div class="post-header">
+            <strong>Аноним</strong>
+            {{ post.created_at.strftime('%Y-%m-%d %H:%M') }}
+        </div>
+        <div class="post-content">
+            {{ post.content|safe }}
+            {% if post.media %}
+                <div class="media">
+                    <a href="{{ url_for('media', media_id=post.media.id) }}" target="_blank">
+                        <img src="{{ url_for('media', media_id=post.media.id) }}" style="max-width: 300px; max-height: 300px;">
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+<h3>Ответить</h3>
+<form method="post" action="{{ url_for('anon_reply', thread_id=thread.id) }}" enctype="multipart/form-data">
+    <p><textarea name="content" cols="80" rows="10" required></textarea></p>
+    <p>Медиа: <input type="file" name="media"></p>
+    <p><input type="submit" value="Отправить"></p>
+</form>
+{% endblock %}
