@@ -38,6 +38,17 @@ Designed for deployment on a local machine or hosting.
 *После запуска программы перейдите в браузер по адресу `http://127.0.0.1:5000`. Зарегистрируйтесь или войдите под администратором.*  
 *After starting the program, open `http://127.0.0.1:5000` in your browser. Register or log in as admin.*
 
+
+## Стек технологий / Tech stack
+
+- **Backend:** Python 3.7+, Flask, Flask-SQLAlchemy, Flask-Login, Flask-WTF, Flask-Mail
+- **База данных:** SQLite (возможна замена на PostgreSQL/MySQL)
+- **Безопасность:** Bleach (санитизация HTML), защита от XSS и CSS-инъекций
+- **Фоновые задачи:** APScheduler (очистка анонимного раздела)
+- **API:** REST (JSON) и Server-Sent Events (SSE) для живых обновлений
+- **Frontend:** Jinja2, Bootstrap 5 (демо-страница), собственный CSS
+- **Формы и валидация:** WTForms
+
 ## Системные требования и установка / System requirements & installation
 
 **Требования / Requirements**
